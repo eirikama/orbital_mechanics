@@ -11,23 +11,23 @@ void System::AddBody( double x, double y, double z, double vx, double vy, double
 {
   CelestialBody P = CelestialBody(x, y, z, vx, vy, vz, mass_, name_);
   ListofBodies[Bodycount] = P;
-  this->Bodycount += 1;
+  Bodycount += 1;
 }
 
 void System::SolverSetup()
 {
- this->N = this->Bodycount;
- this->State = zeros(6*N);
+ N = Bodycount;
+ State.resize(6*N);
 
 int c = 6;
 for (int i = 0; i < N; i++) 
 {
-  this->State(i*c + 0) = this->ListofBodies[i].Position(0);
-  this->State(i*c + 1) = this->ListofBodies[i].Position(1);
-  this->State(i*c + 2) = this->ListofBodies[i].Position(2);
-  this->State(i*c + 3) = this->ListofBodies[i].Velocity(0);
-  this->State(i*c + 4) = this->ListofBodies[i].Velocity(1);
-  this->State(i*c + 5) = this->ListofBodies[i].Velocity(2);
+  State(i*c + 0) = ListofBodies[i].Position(0);
+  State(i*c + 1) = ListofBodies[i].Position(1);
+  State(i*c + 2) = ListofBodies[i].Position(2);
+  State(i*c + 3) = ListofBodies[i].Velocity(0);
+  State(i*c + 4) = ListofBodies[i].Velocity(1);
+  State(i*c + 5) = ListofBodies[i].Velocity(2);
 }
  cout << " " <<endl;
 cout << "Initial State of our System" << endl;
@@ -45,7 +45,7 @@ cout << "(x,y): (" << ListofBodies[i].Position(0) << ", " << ListofBodies[i].Pos
 
 
 
-vec System::NForce(vec B)
+vec System::NewtonianForce(const vec& B)
 {
 
  vec Force = zeros(3 * N);
@@ -89,10 +89,10 @@ return ki;
 void System::RK4()
 {
 vec k1(6*N), k2(6*N), k3(6*N), k4(6*N);
-k1 = NForce(State) * dt;
-k2 = NForce(State + 0.5 * k1) * dt;
-k3 = NForce(State + 0.5 * k2) * dt;
-k4 = NForce(State + k3) * dt;
+k1 = NewtonianForce(State) * dt;
+k2 = NewtonianForce(State + 0.5 * k1) * dt;
+k3 = NewtonianForce(State + 0.5 * k2) * dt;
+k4 = NewtonianForce(State + k3) * dt;
 State += (1.0/6) * (k1 + 2 * (k2 + k3) + k4);
 
 
@@ -103,7 +103,7 @@ void System::RK4Evolve(double numberOfYears)
 { 
 fstream outFile;
 outFile.open("RK4Data.dat", ios::out);
-cout << "[To be evolved in time-steps of " <<this->dt<< " for " << numberOfYears << " years by 4. order Runge Kutta.]" << endl;
+cout << "[To be evolved in time-steps of " << dt << " for " << numberOfYears << " years by 4. order Runge Kutta.]" << endl;
 
 double t = 0; 
 
@@ -114,7 +114,7 @@ while (t < numberOfYears) {
   for (int i=0;i<N; i++) 
   { 
  
-outFile << this->State(6*i+0) << " " << this->State(6*i+1) << " "<< this->State(6*i+3) << " " << this->State(6*i+4) << " ";
+outFile << State(6*i+0) << " " << State(6*i+1) << " " << State(6*i+3) << " " << State(6*i+4) << " ";
 
   }
 outFile << endl;
@@ -126,7 +126,7 @@ outFile.close();
 
 void System::VerletEvolve(double numberOfYears) 
 { 
-  cout << "[To be evolved in time-steps of " <<this->dt<< " for " << numberOfYears << " years by Verlet.]" << endl;
+  cout << "[To be evolved in time-steps of " << dt << " for " << numberOfYears << " years by Verlet.]" << endl;
 
   prevState = State;
   RK4();
@@ -138,7 +138,7 @@ void System::VerletEvolve(double numberOfYears)
     {
       
       vec acc = zeros(6*N);
-      vec force = NForce(State);
+      vec force = NewtonianForce(State);
 
     for (int j = 0; j < N; j++)
     {
@@ -171,7 +171,7 @@ void System::VerletEvolve(double numberOfYears)
 outFile.close();
 };   
 
-vec System::RForce(vec B)
+vec System::RelativisticForce(const vec& B)
 {
 
  vec Force = zeros(6 * N);

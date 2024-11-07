@@ -23,8 +23,8 @@ class System
   System();
 
   void AddBody( double, double, double, double, double, double, double, string);
-  vec NForce(vec);
-  vec RForce(vec);
+  vec NewtonianForce(const vec&);
+  vec RelativisticForce(const vec&);
   void SolverSetup();
   void RK4();
   void RK4Evolve(double);
