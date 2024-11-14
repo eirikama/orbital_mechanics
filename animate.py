@@ -31,9 +31,9 @@ for j, name in zip(N, names):
             z.append(float(a[2 + j]))
 
     orbit_dict[name] = {
-        "x": x[::50],
-        "y": y[::50],
-        "z": z[::50],
+        "x": x[::10],
+        "y": y[::10],
+        "z": z[::10],
     }
 
 # Frame count
@@ -64,15 +64,15 @@ color_dict = {
     "Uranus": (0.678, 0.847, 0.902),
     "Neptune": (0.5, 0.0, 0.5),
     "Pluto": (1, 1, 1),
-    "Halley": (1, 1, 1),
+    "Halley": (1, 0.4, 1),
 }
 
 # Create VisPy canvas for 3D rendering
-canvas = scene.SceneCanvas(keys="interactive", show=True, size=(656, 608))
+canvas = scene.SceneCanvas(keys="interactive", show=True, size=(928, 608))
 view = canvas.central_widget.add_view(camera="turntable")
 view.camera = scene.cameras.TurntableCamera(elevation=90, azimuth=0)
-view.camera.fov = 5
-view.camera.set_range(x=(-34, 7), y=(14.5, 15), z=(-0.0, 0.0))
+view.camera.fov = 1
+view.camera.set_range(x=(-34, 6.5), y=(5., 19.), z=(-0.0, 0.0))
 # canvas.bgcolor = (1.0, 1.0, 1.0, 1.0)  # RGBA, with alpha=1 for opaque
 
 # Initialize markers and trajectories
@@ -85,7 +85,7 @@ for planet, data in orbit_dict.items():
     scatter.set_data(
         np.array([[data["x"][0], data["y"][0], data["z"][0]]]),
         face_color=color_dict[planet],
-        size=np.log(proportion_dict[planet] ),
+        size=np.log(proportion_dict[planet] * 40e3),
     )
     view.add(scatter)
     planet_markers[planet] = scatter
@@ -95,7 +95,7 @@ for planet, data in orbit_dict.items():
         pos=np.array(
             [[data["x"][0], data["y"][0], data["z"][0]]]
         ),  # Initialize with the first position
-        color=color_dict[planet] + (0.3,),
+        color=color_dict[planet] + (0.2,),
         width=1.5,
         parent=view.scene,
     )
@@ -114,7 +114,11 @@ def update_graph(frame):
                 ]
             ]
         )
-        scatter.set_data(new_position, face_color=color_dict[planet])
+        scatter.set_data(
+            new_position,
+            face_color=color_dict[planet],
+            size=np.log(proportion_dict[planet] * 40e3),
+        )
 
         # Update trajectory line by appending new position
         current_positions = trajectory_lines[planet].pos
@@ -123,7 +127,7 @@ def update_graph(frame):
 
 
 # Set up video writer
-writer = imageio.get_writer("orbit_animation_with_trajectories.mp4", fps=30)
+writer = imageio.get_writer("test.mp4", fps=100)
 
 # Frame capture function
 def capture_frame(event):
@@ -149,8 +153,8 @@ def on_timer(event):
         app.quit()
 
 
-legend_y_pos = 23  # Start position for the legend items
-legend_x_pos = -36  # Start position for the legend items
+legend_y_pos = 22  # Start position for the legend items
+legend_x_pos = -35.5  # Start position for the legend items
 for i, (planet, color) in enumerate(color_dict.items()):
     # Add a small colored marker
     marker = scene.Markers(parent=view.scene)
@@ -164,8 +168,8 @@ for i, (planet, color) in enumerate(color_dict.items()):
     text = scene.Text(
         planet,
         color="white",
-        font_size=4500,
-        pos=(legend_x_pos + 3.0, legend_y_pos - i * 2),
+        font_size=17500,
+        pos=(legend_x_pos + 2.0, legend_y_pos - i * 2),
         parent=view.scene,
     )
 
