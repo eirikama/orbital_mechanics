@@ -9,11 +9,11 @@ dt = 0.00005
 for j in (N):
   j = int(j)
   x = []
-  y = [] 
-   
+  y = []
+
   infile = open(sys.argv[1], 'r')
-  for line in infile:           
-         a = line.split() 
+  for line in infile:
+         a = line.split()
          x.append(float(a[0+j]) )
          y.append(float(a[1+j]) )
   infile.close()
@@ -39,7 +39,7 @@ theta1 = arctan(yp1/xp1)
 
 x0 = r[i]
 for i in val2:
-  
+
   if ( abs(r[i] < x0)):
     x0 = r[i]
     xp2 = x[i]
@@ -48,4 +48,4 @@ for i in val2:
 
 theta2 = arctan(yp2/xp2)
 
-print abs(theta1-theta2)*(3600*180/pi), 'arcseconds in', abs(t1-t2), 'years' 
+print abs(theta1-theta2)*(3600*180/pi), 'arcseconds in', abs(t1-t2), 'years'

@@ -9,11 +9,11 @@ N = linspace(0,4*(CelestialBodies-1),CelestialBodies)
 for j in (N):
   j = int(j)
   x = []
-  y = [] 
-   
+  y = []
+
   infile = open(sys.argv[1], 'r')
-  for line in infile:           
-         a = line.split() 
+  for line in infile:
+         a = line.split()
          x.append(float(a[0+j]) )
          y.append(float(a[1+j]) )
   infile.close()
@@ -37,8 +37,8 @@ show()
 #   vy = []
 
 #   infile = open(sys.argv[1], 'r')
-#   for line in infile:           
-#       a = line.split() 
+#   for line in infile:
+#       a = line.split()
 #       vx.append(float(a[2+j]) )
 #       vy.append(float(a[3+j]) )
 #   infile.close
@@ -81,6 +81,5 @@ show()
 # plot(t,abs((E0 - (3e-6*0.5*v**2 - (3e-6*4*pi**2)/r) )/E0))
 # legend(['$|(E_0 - E(t))/E_0$|'])
 # title('Relative Error in Total Energy [RK4]',fontsize=16)
-# xlabel('$t$ [years]',fontsize=16) 
+# xlabel('$t$ [years]',fontsize=16)
 # show()
-

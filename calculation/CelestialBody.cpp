@@ -8,11 +8,11 @@ CelestialBody::CelestialBody( double x, double y, double z, double vx, double vy
   Velocity.set_size(3);
   Position(0) = x/149597870.7;
   Position(1) = y/149597870.7;
-  Position(2) = z/149597870.7; 
+  Position(2) = z/149597870.7;
   Velocity(0) = (vx/149597870.7)*3600*24*365.25;
   Velocity(1) = (vy/149597870.7)*3600*24*365.25;
   Velocity(2) = (vz/149597870.7)*3600*24*365.25;
   mass = mass_;
   name = name_;
-  
+
 }
